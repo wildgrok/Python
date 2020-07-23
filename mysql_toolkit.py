@@ -1,6 +1,8 @@
 __author__ = 'python'
 #version in desktop
-#last modified 6/17/2020
+#last modified
+# 7/6/2020 works with short table data_usa2
+# 6/17/2020
 
 import csv
 import MySQLdb
@@ -25,32 +27,46 @@ mydb = MySQLdb.connect(host='localhost', user='root', passwd='Camello2183', db='
 
 def get_list_of_dates():
     cursor = mydb.cursor()
-    #s = 'select distinct replace(left(Last_Update, 11),"' + chr(39) + '","' + '") as Last_Update from data_usa'
-    s = 'select distinct replace(left(Last_Update, 11),"' + chr(39) + '","' + '") as Last_Update from data_usa2'
-
+    s = 'select distinct replace(left(Last_Update, 11),"' + chr(39) + '","' + '") as Last_Update from data_usa'
+    #s = 'select distinct replace(left(Last_Update, 11),"' + chr(39) + '","' + '") as Last_Update from data_usa2'
     cursor.execute(s)
     return cursor.fetchall()
+
+def get_col_position(colnames, col):
+    cnt = 0
+    for x in colnames:
+        if x == col:
+            return cnt
+        cnt = cnt + 1
 
 
 def load_csv_file(csvfile):
     filecsv = open(csvfile)
     cursor = mydb.cursor()
     csv_data = csv.reader(filecsv, delimiter=',', quotechar='"')
-    next(csv_data) #skip header
+    reader = csv.DictReader(filecsv, delimiter=',')
+    colnames = reader.fieldnames
+    # print(colnames)
+    # pos_Province_State =  get_col_position(colnames, 'Province_State')
+    # pos_Country_Region =  get_col_position(colnames, 'Country_Region')
+    # pos_Last_Update    =  get_col_position(colnames, 'Last_Update')
+    # pos_Deaths         =  get_col_position(colnames, 'Deaths')
+
+
+
     cnt = 0
     # `Province_State` varchar(100) NOT NULL,
     # `Country_Region` varchar(100) NOT NULL,
     # `Last_Update` varchar(100) NOT NULL,
     # `Deaths` varchar(100) DEFAULT NULL,
+    #truncate table before
+    # s = 'truncate table data_usa2;'
+    # cursor.execute(s)
     for row in csv_data:
-        # print(row)
         #            Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,FIPS,Incident_Rate,People_Tested,People_Hospitalized,Mortality_Rate,UID,ISO3,Testing_Rate,Hospitalization_Rate
         #FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,Combined_Key,Incidence_Rate,Case-Fatality_Ratio
-
-
-
         # s = 'INSERT IGNORE INTO data_usa(Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,FIPS,Incident_Rate,People_Tested,People_Hospitalized,Mortality_Rate,UID,ISO3,Testing_Rate,Hospitalization_Rate) '
-        # # s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
+        # # # s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
         # s = s + 'VALUES (%s, %s, %s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s,%s, %s, %s) '
 
         if str(row[0]) + str(row[1]) == '':
@@ -66,12 +82,21 @@ def load_csv_file(csvfile):
 
 
         if Country_Region == 'US':
+        #if row[pos_Country_Region] == 'US':
             s = 'INSERT IGNORE INTO data_usa2(Province_State,Country_Region,Last_Update,Deaths) '
-            # s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
+            #s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
+            #s = s + 'VALUES (' + chr(39) + row[pos_Province_State] + chr(39) + ',' + chr(39) + row[pos_Country_Region] + chr(39) + ',' + chr(39) + row[pos_Last_Update] + chr(39) + ',' + chr(39) + row[pos_Deaths] + chr(39) + '); '
             s = s + 'VALUES (' + chr(39) + Province_State + chr(39) + ',' + chr(39) + Country_Region + chr(39) + ',' + chr(39) + Last_Update + chr(39) + ',' + chr(39) + Deaths + chr(39) + '); '
+
             #s = s + 'VALUES("%s", "%s", "%s","%s") '
-            print(s)
+            #print(s)
+            # print(row)
             cursor.execute(s)
+
+            # s = 'INSERT IGNORE INTO data_usa(Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,FIPS,Incident_Rate,People_Tested,People_Hospitalized,Mortality_Rate,UID,ISO3,Testing_Rate,Hospitalization_Rate) '
+            # # # s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
+            # s = s + 'VALUES (%s, %s, %s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s,%s, %s, %s) '
+            # cursor.execute(s, row)
 
         # try:
         #     cursor.execute(s, row)
