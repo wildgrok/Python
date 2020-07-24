@@ -104,11 +104,12 @@ def load_csv_file(csvfile):
 
         if Country_Region == 'US':
         #if row[pos_Country_Region] == 'US':
-            s = 'INSERT INTO data_usa2(Province_State,Country_Region,Last_Update,Deaths) '
+            s = 'if not exists (select 1 from [dbo].[data_usa2] where Last_Update = ' + chr(39) + Last_Update + chr(39) + ') '
+            s = s + 'INSERT INTO data_usa2(Province_State,Country_Region,Last_Update,Deaths) '
             #s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
             #s = s + 'VALUES (' + chr(39) + row[pos_Province_State] + chr(39) + ',' + chr(39) + row[pos_Country_Region] + chr(39) + ',' + chr(39) + row[pos_Last_Update] + chr(39) + ',' + chr(39) + row[pos_Deaths] + chr(39) + '); '
-            s = s + 'VALUES (' + chr(39) + Province_State + chr(39) + ',' + chr(39) + Country_Region + chr(39) + ',' + chr(39) + Last_Update + chr(39) + ',' + chr(39) + Deaths + chr(39) + '); '
-
+            s = s + 'VALUES (' + chr(39) + Province_State + chr(39) + ',' + chr(39) + Country_Region + chr(39) + ',' + chr(39) + Last_Update + chr(39) + ',' + chr(39) + Deaths + chr(39) + ') '
+            # s = s + 'where Last_Update not in (select Last_Update from [dbo].[data_usa2] where Last_Update <> ' + chr(39) + Last_Update + chr(39)+ ');'
             #s = s + 'VALUES("%s", "%s", "%s","%s") '
             print(s)
             #print(row)
