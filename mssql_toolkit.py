@@ -106,25 +106,15 @@ def load_csv_file(csvfile):
         #if row[pos_Country_Region] == 'US':
             s = 'if not exists (select 1 from [dbo].[data_usa2] where Last_Update = ' + chr(39) + Last_Update + chr(39) + ') '
             s = s + 'INSERT INTO data_usa2(Province_State,Country_Region,Last_Update,Deaths) '
-            #s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
-            #s = s + 'VALUES (' + chr(39) + row[pos_Province_State] + chr(39) + ',' + chr(39) + row[pos_Country_Region] + chr(39) + ',' + chr(39) + row[pos_Last_Update] + chr(39) + ',' + chr(39) + row[pos_Deaths] + chr(39) + '); '
-            s = s + 'VALUES (' + chr(39) + Province_State + chr(39) + ',' + chr(39) + Country_Region + chr(39) + ',' + chr(39) + Last_Update + chr(39) + ',' + chr(39) + Deaths + chr(39) + ') '
-            # s = s + 'where Last_Update not in (select Last_Update from [dbo].[data_usa2] where Last_Update <> ' + chr(39) + Last_Update + chr(39)+ ');'
-            #s = s + 'VALUES("%s", "%s", "%s","%s") '
-            print(s)
+            s = s + 'VALUES (' + chr(39) + Province_State + chr(39) + ',' + chr(39) + Country_Region + chr(39) + ',' + chr(39) + Last_Update + chr(39) + ',' + chr(39) + Deaths + chr(39) + '); '
+            #print(s)
             #print(row)
             cursor.execute(s)
-
-            # s = 'INSERT IGNORE INTO data_usa(Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,FIPS,Incident_Rate,People_Tested,People_Hospitalized,Mortality_Rate,UID,ISO3,Testing_Rate,Hospitalization_Rate) '
-            # # # s = s + 'VALUES("%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s","%s", "%s", "%s") '
-            # s = s + 'VALUES (%s, %s, %s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s,%s, %s, %s) '
-            # cursor.execute(s, row)
-
-        # try:
-        #     cursor.execute(s, row)
-        # #except TypeError:
-        # finally:
-        #     pass
+            # try:
+            #     cursor.execute(s, row)
+            # #except TypeError:
+            # finally:
+            #     pass
         cnt = cnt + 1
     #close the connection to the database.
     mydb.commit()
