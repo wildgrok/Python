@@ -8,34 +8,8 @@ __author__ = 'python'
 #version for sql server
 
 import csv
-#import MySQLdb
 import os
 from dblib3_ado import *
-
-#filecsv = 'C:/Users/python/PycharmProjects/04-25-2020.csv'
-#filecsv = open('04-26-2020.csv')
-csvfolder = 'C:/Users/python/PycharmProjects/coronavirus/csv/'
-
-#mydb = MySQLdb.connect(host='localhost',
-#mydb = MySQLdb.connect(host='localhost', user='root', passwd='Camello2183', db='coronavirus')
-
-mydb = Connection('WORKSTATION\SQLEXPRESS', db='coronavirus')
-print("Connection string: " + mydb.constr)
-if mydb.connected == 1:
-    print("Connected OK")
-    #mydb = c.cursor
-    # cu = c.cursor
-    # lst = cu.execute('select top 10  * from Person.Person')
-    # print("list of columns:")
-    # print(cu.fieldnames)
-    # print('rowcount=' + str(cu.rowcount))
-    # print('select top 10  * from Person.Person')
-    # rows = cu.fetchall()
-    # for x in rows:
-    #     print(x)
-
-# exit()
-
 
 
 #not used
@@ -66,7 +40,6 @@ def get_col_position(colnames, col):
 
 def load_csv_file(csvfile):
     filecsv = open(csvfile)
-    # cursor = mydb.cursor()
     cursor = mydb.cursor
     csv_data = csv.reader(filecsv, delimiter=',', quotechar='"')
     reader = csv.DictReader(filecsv, delimiter=',')
@@ -104,8 +77,6 @@ def load_csv_file(csvfile):
 
 
         if Country_Region == 'US':
-        #if row[pos_Country_Region] == 'US':
-            s = ''
             s = 'if not exists (select 1 from [dbo].[data_usa2] where Last_Update = ' + chr(39) + Last_Update + chr(39)
             s = s + ' and Province_State = ' +chr(39) + Province_State + chr(39)
             s = s + ' and Country_Region = ' +chr(39) + Country_Region + chr(39) + ') '
@@ -135,26 +106,13 @@ def load_all_csv_files(csvfolder):
             load_csv_file(csvfile)
             print('Processed ' + csvfile)
 
+#===================PROGRAM START============================================
 
 
-
-
-
-#===========================================================================
-
-#file = '04-27-2020.csv'
-# m = get_date_from_csv(file)
-# print(m)
-#load_csv_file(file)
-#lst = get_list_of_dates()
-# for x in lst:
-#     print(x)
-# print('-----')
-#
-# print(lst[0][0])
-# print(lst[1][0])
-# print(lst[2][0])
-# print(lst[-1][0])
-# files = os.listdir(csvfolder)
-# print(files)
-load_all_csv_files(csvfolder)
+if __name__ == '__main__':
+    csvfolder = 'C:/Users/python/PycharmProjects/coronavirus/csv/'
+    mydb = Connection('WORKSTATION\SQLEXPRESS', db='coronavirus')
+    print("Connection string: " + mydb.constr)
+    if mydb.connected == 1:
+        print("Connected OK")
+        load_all_csv_files(csvfolder)
