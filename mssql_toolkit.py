@@ -1,6 +1,7 @@
 __author__ = 'python'
 #version in desktop
 #last modified
+#7/30/2020 fixed pk issue in insert (in if exists)
 # 7/6/2020 works with short table data_usa2
 # 6/17/2020
 #copied from mysql version 7/24/2020
@@ -104,7 +105,10 @@ def load_csv_file(csvfile):
 
         if Country_Region == 'US':
         #if row[pos_Country_Region] == 'US':
-            s = 'if not exists (select 1 from [dbo].[data_usa2] where Last_Update = ' + chr(39) + Last_Update + chr(39) + ') '
+            s = ''
+            s = 'if not exists (select 1 from [dbo].[data_usa2] where Last_Update = ' + chr(39) + Last_Update + chr(39)
+            s = s + ' and Province_State = ' +chr(39) + Province_State + chr(39)
+            s = s + ' and Country_Region = ' +chr(39) + Country_Region + chr(39) + ') '
             s = s + 'INSERT INTO data_usa2(Province_State,Country_Region,Last_Update,Deaths) '
             s = s + 'VALUES (' + chr(39) + Province_State + chr(39) + ',' + chr(39) + Country_Region + chr(39) + ',' + chr(39) + Last_Update + chr(39) + ',' + chr(39) + Deaths + chr(39) + '); '
             #print(s)
@@ -115,12 +119,12 @@ def load_csv_file(csvfile):
             # #except TypeError:
             # finally:
             #     pass
-        cnt = cnt + 1
+            cnt = cnt + 1
     #close the connection to the database.
     mydb.commit()
     # cursor.close()
     mydb.close()
-    # print("Processed " + str(cnt) + ' records from ' + csvfile)
+    print("Processed " + str(cnt) + ' records from ' + csvfile)
 
 def load_all_csv_files(csvfolder):
     #list of all files in csv files
