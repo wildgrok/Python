@@ -1,0 +1,4 @@
+ID,Name,Value,LookupValue
+1,Alice,Key1,Value1
+2,Bob,Key2,Value2
+3,Charlie,Key3,Value3
